@@ -1,0 +1,28 @@
+name: CI
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./test/run.sh
+      - run: cmake -S . -B build-cmake && cmake --build build-cmake && ctest --test-dir build-cmake --output-on-failure
+  esp32:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        example: [BasicUsage, ESP32FlashConfig]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install platformio==6.2.0
+      - run: |
+          mkdir -p /tmp/esp32-check/src /tmp/esp32-check/lib/ZeroAllocJSON
+          cp -r src /tmp/esp32-check/lib/ZeroAllocJSON/
+          cp examples/${{ matrix.example }}/*.ino /tmp/esp32-check/src/main.ino
+          printf '[env:esp32dev]\nplatform = espressif32@6.10.0\nboard = esp32dev\nframework = arduino\n' > /tmp/esp32-check/platformio.ini
+          pio run -d /tmp/esp32-check

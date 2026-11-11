@@ -1,0 +1,12 @@
+{
+  "name": "ZeroAllocJSON",
+  "version": "0.0.1",
+  "description": "Allocation-free bounded access to flat JSON configuration buffers",
+  "keywords": ["json", "configuration", "zero-copy", "embedded"],
+  "repository": {"type": "git", "url": "https://github.com/C3POAdmin/ZeroAllocJSON.git"},
+  "authors": [{"name": "C3POAdmin"}],
+  "license": "MIT",
+  "frameworks": "*",
+  "platforms": "*",
+  "build": {"includeDir": "src", "srcDir": "src"}
+}
